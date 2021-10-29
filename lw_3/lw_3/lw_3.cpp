@@ -1,4 +1,5 @@
-﻿#include <stdio.h>
+﻿#include "time.h"
+#include <stdio.h>
 #include <string.h>
 
 short toInt(char ch) {
@@ -18,13 +19,17 @@ int findFirstCharOccurrence(char str[], char looking) {
 	}
 }
 
-unsigned extractTimeFromLog(char log[]) {
+time extractTimeFromLog(char log[]) {
+	time result;
 	short i = findFirstCharOccurrence(log, '[');
-	short days = toInt(log[i + 1]) * 10 + toInt(log[i + 2]);
-	short hours = toInt(log[i + 13]) * 10 + toInt(log[i + 14]);
-	short minutes = toInt(log[i + 16]) * 10 + toInt(log[i + 17]);
-	short seconds = toInt(log[i + 19]) * 10 + toInt(log[i + 20]);
-	return (((days - 1) * 24 + hours) * 60 + minutes) * 60 + seconds;
+	result.day = toInt(log[i + 1]) * 10 + toInt(log[i + 2]);
+	char month[4] = {log[i + 4], log[i + 5], log [i + 6]};
+	result.month = encodeMonth(month);
+	result.year = toInt(log[i + 8]) * 1000 + toInt(log[i + 9]) * 100 + toInt(log[i + 10]) * 10 + toInt(log[i + 11]);
+	result.hour = toInt(log[i + 13]) * 10 + toInt(log[i + 14]);
+	result.minute = toInt(log[i + 16]) * 10 + toInt(log[i + 17]);
+	result.second = toInt(log[i + 19]) * 10 + toInt(log[i + 20]);
+	return result;
 }
 
 short extractStatusFromLog(char log[]) {
@@ -36,16 +41,6 @@ short extractStatusFromLog(char log[]) {
 		i++;
 	}
 	return toInt(log[i + 1]) * 100 + toInt(log[i + 2]) * 10 + toInt(log[i + 3]);
-}
-
-void printTime(unsigned seconds, char month[], short year) {
-	short days = seconds / 24 / 60 / 60;
-	seconds -= days * 24 * 60 * 60;
-	short hours = seconds / 60 / 60;
-	seconds -= hours * 60 * 60;
-	short minutes = seconds / 60;
-	seconds -= minutes * 60;
-	printf("%02d/%s/%d/%02d:%02d:%02u", days + 1, month, year, hours, minutes, seconds);
 }
 
 void readLineAndMoveFilePointer(FILE *fInput, char str[], fpos_t *ptr) {
@@ -69,20 +64,22 @@ void outputErrorRequests(FILE *fInput, FILE* fOutput) {
 	fprintf(fOutput, "%u\n", errorsCounter);
 }
 
-void findMaxRequestsCount(FILE *fInput, unsigned maxLogCount) {
-	unsigned leftTime, rightTime, avaliableInterval = 1000, timeStart = 0, timeEnd = 0;
-	maxLogCount = 100;
+void findMaxRequestsCount(FILE *fInput, unsigned long long avaliableInterval) {
+	time  leftTime, rightTime, timeStart, timeEnd;
 	fpos_t leftIt, rightIt;
+	unsigned maxLogCount = 0, logCounter = 1;
+
 	char inputLog[400] = { 0 };
 	fseek(fInput, SEEK_SET, 0);
 	fgets(inputLog, 400, fInput);
-	unsigned logCounter = 1;
 	rightTime = extractTimeFromLog(inputLog);
 	leftTime = rightTime;
+	timeStart = leftTime;
+	timeEnd = leftTime;
 	fgetpos(fInput, &leftIt);
 	fgetpos(fInput, &rightIt);
 	while (!feof(fInput)) {
-		if (rightTime - leftTime <= avaliableInterval) {
+		if (getTimeInSeconds(rightTime) - getTimeInSeconds(leftTime) <= avaliableInterval) {
 			readLineAndMoveFilePointer(fInput, inputLog, &rightIt);
 			rightTime = extractTimeFromLog(inputLog);
 			logCounter++;
@@ -92,25 +89,37 @@ void findMaxRequestsCount(FILE *fInput, unsigned maxLogCount) {
 			leftTime = extractTimeFromLog(inputLog);
 			logCounter--;
 		}
-		if ((logCounter > maxLogCount) && (rightTime - leftTime <= avaliableInterval)) {
+		if ((logCounter > maxLogCount) && (getTimeInSeconds(rightTime) - getTimeInSeconds(leftTime) <= avaliableInterval)) {
 			maxLogCount = logCounter;
 			timeStart = leftTime;
 			timeEnd = rightTime;
 		}
 	}
-	char month[] = "Jul";
-	printTime(timeStart, month, 1995);
+
+	printTime(timeStart);
 	printf(" - ");
-	printTime(timeEnd, month, 1995);
+	printTime(timeEnd);
 }
 
-int main() {
-	FILE *fInput = fopen("access_log_Jul95", "r");
-	FILE *fOutput = fopen("result.txt", "w");
+int main(int argc, char *argv[]) {
+	if (argc != 4) {
+		printf("Wrong number of arguments");
+		return 1;
+	}
+	FILE* fInput;
+	if (!(fInput = fopen(argv[1], "r"))) {
+		printf("File does not exist");
+		return 1;
+	}
+	FILE* fOutput = fopen(argv[2], "w");
+	long long avaliableInterval;
+	if (!(avaliableInterval = atoll(argv[3]))) {
+		printf("Interval is not number");
+		return 1;
+	}
 	outputErrorRequests(fInput, fOutput);
 	fclose(fOutput);
-	unsigned maxLogCount = 0;
-	findMaxRequestsCount(fInput, maxLogCount);
+	findMaxRequestsCount(fInput, 10000);
 	fclose(fInput);
 	return 0;
 }

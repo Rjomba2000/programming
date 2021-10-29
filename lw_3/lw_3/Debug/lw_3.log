@@ -1,0 +1,3 @@
+﻿  lw_3.cpp
+c:\users\egosh\desktop\proga\sem1\lw_3\lw_3\lw_3.cpp(116): warning C4013: atoll: нет определения; предполагается "extern" с возвратом типа "int"
+  lw_3.vcxproj -> C:\Users\egosh\Desktop\proga\sem1\lw_3\Debug\lw_3.exe

@@ -1,0 +1,5 @@
+﻿  lw_2.cpp
+c:\users\egosh\desktop\proga\sem1\lw_2\lw_2\lw_2.cpp(16): warning C4013: gets: нет определения; предполагается "extern" с возвратом типа "int"
+  uint1024_t_functions.cpp
+  Создание кода...
+  lw_2.vcxproj -> C:\Users\egosh\Desktop\proga\sem1\lw_2\Debug\lw_2.exe

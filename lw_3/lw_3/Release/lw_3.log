@@ -1,0 +1,8 @@
+﻿  lw_3.cpp
+c:\users\egosh\desktop\proga\sem1\lw_3\lw_3\lw_3.cpp(116): warning C4013: atoll: нет определения; предполагается "extern" с возвратом типа "int"
+  time.cpp
+  Создание кода
+c:\users\egosh\desktop\proga\sem1\lw_3\lw_3\time.cpp(30): warning C4715: encodeMonth: значение возвращается не при всех путях выполнения
+  All 17 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Создание кода завершено
+  lw_3.vcxproj -> C:\Users\egosh\Desktop\proga\sem1\lw_3\Release\lw_3.exe
