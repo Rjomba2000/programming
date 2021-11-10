@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <windows.h>
 #include "gifenc.h"
+#include "gifCreator.h"
 
 #define OFFSET_HEX 0x0A
 #define WIDTH_HEX 0x12
@@ -44,12 +45,12 @@ void deleteBitMap(unsigned char** bitMap, unsigned height) {
 	free(bitMap);
 }
 
-void fillBitMap(FILE* fInput, unsigned char** bitMap, unsigned bitOffset, unsigned picHeiht, unsigned picWidth) {
+void fillBitMap(FILE* fInput, unsigned char** bitMap, unsigned bitOffset, unsigned picHeight, unsigned picWidth) {
 	fseek(fInput, bitOffset, SEEK_SET);
 	int scanLength = ((picWidth - 1) / 32 + 1) * 4;
-	for (int i = picHeiht - 1; i >= 0; --i) {
+	for (int i = picHeight - 1; i >= 0; --i) {
 		int bitCount = 0;
-		for (int j = 0; j < scanLength; j++) {
+		for (int j = 0; j < scanLength; ++j) {
 			unsigned char ch = readBytes(fInput, 1);
 			unsigned char divider = 128;
 			for (int k = 0; k < 8; ++k, ++bitCount) {
@@ -124,8 +125,9 @@ void printField(gameField field) {
 
 int main() {
 	FILE* bmpInputFile;
+	FILE* gifFile = fopen("res.gif", "wb");
 
-	bmpInputFile = fopen("field.bmp", "r");
+	bmpInputFile = fopen("pudge3.bmp", "rb");
 
 	unsigned bitOffset = getValueFromBmp(bmpInputFile, OFFSET_HEX, 4);
 	unsigned picWidth = getValueFromBmp(bmpInputFile, WIDTH_HEX, 4);
@@ -135,6 +137,7 @@ int main() {
 
 	fillBitMap(bmpInputFile, field.bitMap, bitOffset, picHeight, picWidth);
 
+	createGif(gifFile, picWidth, picHeight);
 
 	//COORD position = { 0,0 };
 	//HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -151,10 +154,11 @@ int main() {
 		0
 	);
 
-	printField(field);
+	//printField(field);
 
 	//SetConsoleCursorPosition(hConsole, position);
-	for (int k = 0; k < 1000; ++k) {
+	addFrame(gifFile, field.bitMap, picWidth, picHeight);
+	for (int k = 0; k < 100; ++k) {
 		//printField(field);
 		int counter = 0;
 		for (int i = 0; i < picHeight; ++i) {
@@ -167,8 +171,10 @@ int main() {
 		ge_add_frame(gif, 10);
 
 		gameStep(field);
+		addFrame(gifFile, field.bitMap, picWidth, picHeight);
 	}
 
+	finishGifCreation(gifFile);
 	ge_close_gif(gif);
 	deleteBitMap(field.bitMap, picHeight);
 	fclose(bmpInputFile);

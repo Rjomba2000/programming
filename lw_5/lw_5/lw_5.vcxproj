@@ -155,10 +155,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gifCreator.cpp" />
     <ClCompile Include="gifenc.cpp" />
     <ClCompile Include="lw_5.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gifCreator.h" />
     <ClInclude Include="gifenc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
