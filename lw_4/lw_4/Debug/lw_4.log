@@ -1,0 +1,5 @@
+﻿  lw_4.cpp
+  tagEditor.cpp
+c:\users\egosh\desktop\trash\lw_4\lw_4\tageditor.cpp(85): warning C4244: функция: преобразование "fpos_t" в "unsigned long", возможна потеря данных
+  Создание кода...
+  lw_4.vcxproj -> C:\Users\egosh\Desktop\trash\lw_4\Debug\lw_4.exe

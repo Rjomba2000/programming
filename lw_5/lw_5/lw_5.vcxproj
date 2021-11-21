@@ -155,13 +155,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="gifCreator.cpp" />
-    <ClCompile Include="gifenc.cpp" />
+    <ClCompile Include="argParser.cpp" />
+    <ClCompile Include="bmpMaker.cpp" />
+    <ClCompile Include="gameOfLife.cpp" />
     <ClCompile Include="lw_5.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gifCreator.h" />
-    <ClInclude Include="gifenc.h" />
+    <ClInclude Include="argParser.h" />
+    <ClInclude Include="bmpMaker.h" />
+    <ClInclude Include="gameOfLife.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
