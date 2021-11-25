@@ -101,10 +101,10 @@ short to_int(char ch) {
 	return ch - 48;
 }
 
-void swap(uint16_t *x, uint16_t *y) {
-	uint16_t buffer = *x;
-	*x = *y;
-	*y = buffer;
+void swap(uint16_t *num1, uint16_t *num2) {
+	uint16_t buffer = *num1;
+	*num1 = *num2;
+	*num2 = buffer;
 }
 
 void swap_array(uint16_t arr[], int left, int right) {
@@ -133,15 +133,15 @@ void zero_array(uint16_t arr[], int size) {
 	}
 }
 
-void scanf_value(uint1024_t *x) {
+void scanf_value(uint1024_t *value) {
 	uint16_t scan_buffer[DECIMAL_RANK_COUNT] = { 0 };
 	int rank_count = 0;
 	read_number_into_buffer(scan_buffer, &rank_count);
 	swap_array(scan_buffer, 0, rank_count);
-	zero_array(x->rank, STORED_RANK_COUNT);
+	zero_array(value->rank, STORED_RANK_COUNT);
 	int i = 0;
 	while (!is_null(scan_buffer, DECIMAL_RANK_COUNT)) {
-		x->rank[i] = get_remainder_and_divide(scan_buffer, DECIMAL_RANK_COUNT, 10, UINT16_MAX + 1);
+		value->rank[i] = get_remainder_and_divide(scan_buffer, DECIMAL_RANK_COUNT, 10, UINT16_MAX + 1);
 		i++;
 	}
 }
