@@ -5,20 +5,23 @@
 #include "tagEditor.h"
 #include "argParser.h" 
 
+void finishWithErrorMessage(char* message) {
+	printf("%s", message);
+	exit(EXIT_FAILURE);
+}
+
 int main(int argc, char* argv[]) {
 	setlocale(LC_ALL, "Russian");
 
 	if (argc < 3) {
-		printf("Wrong number of arguments");
-		exit(EXIT_FAILURE);
+		finishWithErrorMessage("Wrong number of arguments");
 	}
 
 	char argName[100] = "", fileName[100] = "";
 	parseArg("filepath", argv[1], argName, fileName);
 	FILE *mp3File;
 	if (!(mp3File = fopen(fileName, "rb"))) {
-		printf("Can not open the file");
-		exit(EXIT_FAILURE);
+		finishWithErrorMessage("Can not open the file");
 	}
 
 	char argValue[100] = "";
@@ -34,7 +37,7 @@ int main(int argc, char* argv[]) {
 			showTag(mp3File, tagsPos[tag]);
 		}
 		else {
-			printf("Tag doesn't exist");
+			finishWithErrorMessage("Tag doesn't exist");
 		}
 	}
 	else if (!strcmp(argName, "set") && (argc == 4)) {
@@ -45,12 +48,11 @@ int main(int argc, char* argv[]) {
 			setTag(mp3File, tag, tagValue, tagsPos, fileName);
 		}
 		else {
-			printf("Tag doesn't exist");
+			finishWithErrorMessage("Tag doesn't exist");
 		}
 	}
 	else {
-		printf("Unknown set of arguments");
-		exit(EXIT_FAILURE);
+		finishWithErrorMessage("Unknown set of arguments");
 	}
 	fclose(mp3File);
 	return 0;
